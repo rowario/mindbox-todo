@@ -80,7 +80,7 @@ const TasksList: FC = () => {
 	};
 
 	const handleFilterChange = (_: React.MouseEvent<HTMLElement>, value: string) => {
-		setFilter(value as Filter);
+		if (value && value !== filter) setFilter(value as Filter);
 	};
 
 	useEffect(() => {
