@@ -11,11 +11,36 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 	Typography,
+	styled,
 } from "@mui/material";
 import { FC, useContext, useEffect, useState } from "react";
 import { TasksContext } from "../contexts/TasksContextProvider";
-import { useTasksStyles } from "../hooks/useTasksStyles";
 import { Task } from "../types";
+
+const TaskFormControlLabel = styled(FormControlLabel)<{ completed: number }>(({ completed }) => ({
+	textDecoration: completed ? "line-through" : "none",
+	color: completed ? "gray" : "black",
+}));
+
+const FiltersBox = styled(Box)(({ theme }) => ({
+	marginTop: theme.spacing(1),
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "center",
+	"& > div": {
+		display: "flex",
+		width: "33.3333333%",
+	},
+	"& > div:nth-of-type(1)": {
+		justifyContent: "start",
+	},
+	"& > div:nth-of-type(2)": {
+		justifyContent: "center",
+	},
+	"& > div:nth-of-type(3)": {
+		justifyContent: "end",
+	},
+}));
 
 const filters = {
 	all: (_: Task) => true,
@@ -32,7 +57,7 @@ const TasksList: FC = () => {
 
 	const { tasks, dispatch } = useContext(TasksContext);
 
-	const styles = useTasksStyles();
+	// const styles = useTasksStyles();
 
 	const completedCount = tasks.filter((x) => x.completed).length;
 	const activeCount = tasks.length - completedCount;
@@ -66,7 +91,7 @@ const TasksList: FC = () => {
 		<Container sx={{ paddingTop: 2 }}>
 			<Grid container justifyContent={"center"}>
 				<Grid item xl={7}>
-					<Paper className={styles.tasksPaper} elevation={1}>
+					<Paper sx={{ padding: 2 }} elevation={1}>
 						<form
 							onSubmit={(e) => {
 								e.preventDefault();
@@ -83,15 +108,16 @@ const TasksList: FC = () => {
 								variant="outlined"
 							/>
 						</form>
-						<FormGroup className={styles.tasksList}>
+						<FormGroup sx={{ marginTop: 2 }}>
 							{filteredTasks.length < 1 && (
 								<Typography align="center" color="gray">
 									There are no tasks
 								</Typography>
 							)}
 							{filteredTasks.map((task) => (
-								<FormControlLabel
-									className={task.completed ? styles.completedTask : undefined}
+								<TaskFormControlLabel
+									// fix of non boolean prop error :(
+									completed={task.completed ? 1 : 0}
 									key={task.id}
 									label={task.name}
 									checked={task.completed}
@@ -100,7 +126,7 @@ const TasksList: FC = () => {
 							))}
 						</FormGroup>
 						{tasks.length > 0 && (
-							<Box className={styles.filters}>
+							<FiltersBox>
 								<Box>
 									<Typography color="gray" fontSize={12}>
 										{activeCount} items left
@@ -118,7 +144,7 @@ const TasksList: FC = () => {
 										Clear completed
 									</Button>
 								</Box>
-							</Box>
+							</FiltersBox>
 						)}
 					</Paper>
 				</Grid>
