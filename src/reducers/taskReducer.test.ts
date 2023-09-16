@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { taskReducer } from "./taskReducer";
 import { useReducer } from "react";
-import { Task } from "../types/Task";
+import { Task } from "../types";
 
 const mockTasks: Task[] = [
 	{
