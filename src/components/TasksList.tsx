@@ -12,7 +12,7 @@ import {
 	ToggleButtonGroup,
 	Typography,
 } from "@mui/material";
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { TasksContext } from "../contexts/TasksContextProvider";
 import { useTasksStyles } from "../hooks/useTasksStyles";
 import { Task } from "../types";
@@ -57,6 +57,10 @@ const TasksList: FC = () => {
 	const handleFilterChange = (_: React.MouseEvent<HTMLElement>, value: string) => {
 		setFilter(value as Filter);
 	};
+
+	useEffect(() => {
+		dispatch({ type: "LOAD_STORAGE" });
+	}, []);
 
 	return (
 		<Container sx={{ paddingTop: 2 }}>

@@ -18,7 +18,11 @@ export type ToggleTodoAction = {
 	payload: string;
 };
 
-export type TaskReducerAction = AddTodoAction | DeleteTodoAction | ToggleTodoAction;
+export type LoadStorageAction = {
+	type: "LOAD_STORAGE";
+};
+
+export type TaskReducerAction = AddTodoAction | DeleteTodoAction | ToggleTodoAction | LoadStorageAction;
 
 export type TasksContextModel = {
 	tasks: Task[];
