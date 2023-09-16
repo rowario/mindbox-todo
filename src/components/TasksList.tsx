@@ -15,9 +15,10 @@ import {
 import { FC, useContext, useState } from "react";
 import { TasksContext } from "../contexts/TasksContextProvider";
 import { Task } from "../types/Task";
+import { useTasksStyles } from "../hooks/useTasksStyles";
 
 const filters = {
-    all: (task: Task) => task,
+    all: (_: Task) => true,
     active: (task: Task) => !task.completed,
     completed: (task: Task) => task.completed,
 };
@@ -27,19 +28,25 @@ type Filter = keyof typeof filters;
 const TasksList: FC = () => {
     const [input, setInput] = useState("");
     const [filter, setFilter] = useState<Filter>("all");
+
     const { tasks, dispatch } = useContext(TasksContext);
 
-    const tasksDone = tasks.filter((x) => x.completed).length;
+    const styles = useTasksStyles();
+
+    const completedCount = tasks.filter((x) => x.completed).length;
+    const activeCount = tasks.length - completedCount;
 
     const filteredTasks = tasks.filter(filters[filter]);
 
     const handleAdd = () => {
-        setInput("");
-        dispatch({ type: "ADD_TASK", payload: input });
+        if (input.trim().length > 0) {
+            setInput("");
+            dispatch({ type: "ADD_TASK", payload: input });
+        }
     };
 
     const handleClear = () => {
-        dispatch({ type: "CLEAR_DONE_TASKS" });
+        dispatch({ type: "CLEAR_COMPLETED_TASKS" });
     };
 
     const handleToggle = (taskId: string) => {
@@ -57,12 +64,7 @@ const TasksList: FC = () => {
         <Container sx={{ paddingTop: 2 }}>
             <Grid container justifyContent={"center"}>
                 <Grid item xl={7}>
-                    <Paper
-                        sx={{
-                            padding: 2,
-                        }}
-                        elevation={1}
-                    >
+                    <Paper className={styles.tasksPaper} elevation={1}>
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
@@ -79,7 +81,7 @@ const TasksList: FC = () => {
                                 variant="outlined"
                             />
                         </form>
-                        <FormGroup sx={{ mt: 2 }}>
+                        <FormGroup className={styles.tasksList}>
                             {filteredTasks.length < 1 && (
                                 <Typography align="center" color="gray">
                                     There are no tasks
@@ -87,56 +89,29 @@ const TasksList: FC = () => {
                             )}
                             {filteredTasks.map((task) => (
                                 <FormControlLabel
+                                    className={
+                                        task.completed
+                                            ? styles.completedTask
+                                            : undefined
+                                    }
                                     key={task.id}
-                                    sx={{
-                                        textDecoration: task.completed
-                                            ? "line-through"
-                                            : "none",
-                                        color: task.completed
-                                            ? "gray"
-                                            : "black",
-                                    }}
                                     label={task.name}
                                     checked={task.completed}
                                     control={
                                         <Checkbox
-                                            onChange={() => {
-                                                handleToggle(task.id);
-                                            }}
+                                            onChange={() =>
+                                                handleToggle(task.id)
+                                            }
                                         />
                                     }
                                 />
                             ))}
                         </FormGroup>
                         {tasks.length > 0 && (
-                            <Box
-                                pt={1}
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    "& > div": {
-                                        display: "flex",
-                                        width: "33.3333333%",
-                                    },
-                                    "& > div:nth-of-type(1)": {
-                                        justifyContent: "start",
-                                    },
-                                    "& > div:nth-of-type(2)": {
-                                        justifyContent: "center",
-                                    },
-                                    "& > div:nth-of-type(3)": {
-                                        justifyContent: "end",
-                                    },
-                                }}
-                            >
+                            <Box className={styles.filters}>
                                 <Box>
                                     <Typography color="gray" fontSize={12}>
-                                        {
-                                            tasks.filter((x) => !x.completed)
-                                                .length
-                                        }{" "}
-                                        items left
+                                        {activeCount} items left
                                     </Typography>
                                 </Box>
                                 <Box>
@@ -159,7 +134,7 @@ const TasksList: FC = () => {
                                 </Box>
                                 <Box>
                                     <Button
-                                        disabled={tasksDone < 1}
+                                        disabled={completedCount < 1}
                                         onClick={handleClear}
                                         variant="text"
                                         size="small"

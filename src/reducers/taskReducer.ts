@@ -6,7 +6,7 @@ type AddTodoAction = {
 };
 
 type DeleteTodoAction = {
-    type: "CLEAR_DONE_TASKS";
+    type: "CLEAR_COMPLETED_TASKS";
 };
 
 type ToggleTodoAction = {
@@ -30,7 +30,7 @@ export const taskReducer = (state: Task[], action: TaskReducerAction) => {
                 },
                 ...state,
             ];
-        case "CLEAR_DONE_TASKS":
+        case "CLEAR_COMPLETED_TASKS":
             return state.filter((task) => !task.completed);
         case "TOGGLE_TASK":
             return state.map((task) => {
