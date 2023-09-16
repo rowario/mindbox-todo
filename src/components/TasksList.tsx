@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { FC, useContext, useState } from "react";
 import { TasksContext } from "../contexts/TasksContextProvider";
-import { Task } from "../types/Task";
 import { useTasksStyles } from "../hooks/useTasksStyles";
+import { Task } from "../types";
 
 const filters = {
 	all: (_: Task) => true,

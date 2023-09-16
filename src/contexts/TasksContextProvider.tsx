@@ -1,11 +1,6 @@
 import { FC, ReactNode, createContext, useReducer } from "react";
-import { Task } from "../types/Task";
-import { TaskReducerAction, taskReducer } from "../reducers/taskReducer";
-
-type TasksContextModel = {
-	tasks: Task[];
-	dispatch: React.Dispatch<TaskReducerAction>;
-};
+import { taskReducer } from "../reducers/taskReducer";
+import { TasksContextModel } from "../types";
 
 export const TasksContext = createContext<TasksContextModel>({} as TasksContextModel);
 

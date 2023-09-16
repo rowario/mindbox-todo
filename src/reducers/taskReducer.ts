@@ -1,20 +1,4 @@
-import { Task } from "../types/Task";
-
-type AddTodoAction = {
-	type: "ADD_TASK";
-	payload: string;
-};
-
-type DeleteTodoAction = {
-	type: "CLEAR_COMPLETED_TASKS";
-};
-
-type ToggleTodoAction = {
-	type: "TOGGLE_TASK";
-	payload: string;
-};
-
-export type TaskReducerAction = AddTodoAction | DeleteTodoAction | ToggleTodoAction;
+import { Task, TaskReducerAction } from "../types";
 
 export const taskReducer = (state: Task[], action: TaskReducerAction) => {
 	switch (action.type) {
