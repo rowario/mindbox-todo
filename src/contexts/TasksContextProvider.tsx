@@ -3,22 +3,17 @@ import { Task } from "../types/Task";
 import { TaskReducerAction, taskReducer } from "../reducers/taskReducer";
 
 type TasksContextModel = {
-    tasks: Task[];
-    dispatch: React.Dispatch<TaskReducerAction>;
+	tasks: Task[];
+	dispatch: React.Dispatch<TaskReducerAction>;
 };
 
-export const TasksContext = createContext<TasksContextModel>(
-    {} as TasksContextModel
-);
+export const TasksContext = createContext<TasksContextModel>({} as TasksContextModel);
 
+// Решил использовать контекст, так-как в задании было сказано про использование ReactHooks
 const TasksContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [tasks, dispatch] = useReducer(taskReducer, []);
+	const [tasks, dispatch] = useReducer(taskReducer, []);
 
-    return (
-        <TasksContext.Provider value={{ tasks, dispatch }}>
-            {children}
-        </TasksContext.Provider>
-    );
+	return <TasksContext.Provider value={{ tasks, dispatch }}>{children}</TasksContext.Provider>;
 };
 
 export default TasksContextProvider;
